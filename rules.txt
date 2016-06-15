@@ -1,0 +1,6 @@
+{
+    "rules": {
+        ".read": "root.child('users').hasChild(auth.uid)",
+        ".write": "root.child('users').hasChild(auth.uid) && root.child('users').child(auth.uid).child('isAdmin').val() === true"
+    }
+}

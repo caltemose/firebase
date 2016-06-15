@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8 />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Testing</title>
+
+    <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+    <script>
+    var config = {
+        apiKey: "AIzaSyAGOPCns-YWmUL7fVgpfgZIEjVEuPc0eAc",
+        authDomain: "sizzling-torch-6298.firebaseapp.com",
+        databaseURL: "https://sizzling-torch-6298.firebaseio.com",
+        storageBucket: "sizzling-torch-6298.appspot.com",
+    };
+    firebase.initializeApp(config);
+    </script>
+
+    <script src="playground.js"></script>
+
+    <style type="text/css">
+    body {
+        margin: 2em;
+    }
+    section {
+        padding: 1em 0;
+        border-top: 1px solid #aaa;
+    }
+    </style>
+</head>
+<body>
+
+<h1>Firebase Auth/Database Playground</h1>
+
+<section id="auth">
+    <h2>Authentication</h2>
+    <button disabled id="signIn">Sign in</button>
+    <div id="userinfo"></div>
+</section>
+
+<section id="database">
+    <h2>Database stuff</h2>
+</section>
+
+</body>
+</html>

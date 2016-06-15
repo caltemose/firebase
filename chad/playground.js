@@ -1,9 +1,13 @@
 (function(window, document, firebase) {
 
+    // --------------------------------------------------------------- //
+    // AUTHENTICATION STUFF
+    // --------------------------------------------------------------- //
+
     var SIGN_IN = 'Sign in';
     var SIGN_OUT = 'Sign out';
 
-    var signInButton, results, databaseElement;
+    var signInButton, results, databaseElement, daysList;
 
     function toggleSignIn() {
         if (!firebase.auth().currentUser) {
@@ -22,6 +26,7 @@
         databaseElement.style.display = 'none';
         signInButton = document.getElementById('signIn');
         results = {};
+        daysList = document.getElementById('days');
 
         firebase.auth().getRedirectResult().then(function(result) {
             console.log('getRedirectResult success');
@@ -42,6 +47,7 @@
                 console.log(user);
                 databaseElement.style.display = 'block';
                 signInButton.textContent = SIGN_OUT;
+                startDatabaseView();
             } else {
                 console.log('onAuthStateChanged unauthed');
                 databaseElement.style.display = 'none';
@@ -52,6 +58,26 @@
 
         signInButton.addEventListener('click', toggleSignIn, false);
     }
+
+    // --------------------------------------------------------------- //
+    // DATABASE READ/WRITE
+    // --------------------------------------------------------------- //
+
+    function startDatabaseView () {
+        days.innerHTML = '';
+        var daysRef = firebase.database().ref('days');
+        daysRef.on('child_added', function(data) {
+            var day = document.createElement('li');
+            day.textContent = data.textContent = data.val().date + ' | ' + data.val().location;
+            daysList.appendChild(day);
+            //createPostElement(data.key, data.val().title, data.val().body, data.val().author),
+            //   containerElement.firstChild);
+        });
+    }
+
+    // --------------------------------------------------------------- //
+    // INITIALIZATION
+    // --------------------------------------------------------------- //
 
     window.onload = function() {
         initApp();

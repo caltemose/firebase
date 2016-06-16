@@ -7,7 +7,7 @@
     var SIGN_IN = 'Sign in';
     var SIGN_OUT = 'Sign out';
 
-    var signInButton, results, databaseElement, daysList;
+    var signInButton, results, databaseElement, daysList, userEl;
 
     function toggleSignIn() {
         if (!firebase.auth().currentUser) {
@@ -27,29 +27,30 @@
         signInButton = document.getElementById('signIn');
         results = {};
         daysList = document.getElementById('days');
+        userEl = document.getElementById('user');
 
         firebase.auth().getRedirectResult().then(function(result) {
-            console.log('getRedirectResult success');
-            console.log(result);
+            // console.log('getRedirectResult success');
+            // console.log(result);
             if (result.user)
                 results.user = result.user;
             if (result.credential)
                 results.token = result.credential.accessToken;
         }).catch(function(error) {
-            console.log('getRedirectResult error');
-            console.log(error);
+            // console.log('getRedirectResult error');
+            // console.log(error);
             results = {};
         });
 
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
-                console.log('onAuthStateChanged authed');
-                console.log(user);
+                // console.log('onAuthStateChanged authed');
+                // console.log(user);
                 databaseElement.style.display = 'block';
                 signInButton.textContent = SIGN_OUT;
                 startDatabaseView();
             } else {
-                console.log('onAuthStateChanged unauthed');
+                // console.log('onAuthStateChanged unauthed');
                 databaseElement.style.display = 'none';
                 signInButton.textContent = SIGN_IN;
             }
@@ -67,12 +68,24 @@
         days.innerHTML = '';
         var daysRef = firebase.database().ref('days');
         daysRef.on('child_added', function(data) {
-            var day = document.createElement('li');
-            day.textContent = data.textContent = data.val().date + ' | ' + data.val().location;
-            daysList.appendChild(day);
-            //createPostElement(data.key, data.val().title, data.val().body, data.val().author),
-            //   containerElement.firstChild);
+            var day = jade.templates.day(data.val());
+            daysList.innerHTML += day;
         });
+
+        // usersList.innerHTML = '';
+        var userId = firebase.auth().currentUser.uid;
+        // var userRef = firebase.database().ref('/users/' + userId);
+        // firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+        firebase.database().ref('/users/' + userId).once('value').then(function (data) {
+            console.log(data.val());
+            var user = jade.templates.user(data.val());
+            userEl.innerHTML += user;
+        });
+        // userRef.on('child_added', function (data) {
+            // console.log(data.val());
+            // var user = jade.templates.user(data.val());
+            // usersList.innerHTML += user;
+        // });
     }
 
     // --------------------------------------------------------------- //
